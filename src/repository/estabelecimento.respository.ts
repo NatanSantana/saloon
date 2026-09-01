@@ -15,25 +15,25 @@ export class EstabelecimentoRepository {
 
 
     cadastrarEstabelecimento(dto: EstabelecimentoDto) {
-        return PrismaService.estabelecimento.create({
-            data: {
-                dono: dto.dono,
-                nome: dto.nome,
-                cnpj: dto.cnpj,
-                Endereco: {
-                    create: {
-                        cep: dto.endereco.cep,
-                        cidade: dto.endereco.cidade,
-                        bairro: dto.endereco.bairro,
-                        rua: dto.endereco.rua
-                    }
+    return PrismaService.estabelecimento.create({
+        data: {
+            User: { connect: { idUser: dto.dono } },
+            nome: dto.nome,
+            cnpj: dto.cnpj,
+            Endereco: {
+                create: {
+                    cep: dto.endereco.cep,
+                    cidade: dto.endereco.cidade,
+                    bairro: dto.endereco.bairro,
+                    rua: dto.endereco.rua
                 }
-            },
-            include: {
-                Endereco: true
             }
-        })
-    }
+        },
+        include: {
+            Endereco: true
+        }
+    })
+}
 
     deletarEstabelecimento(cnpj: string, dono: number) {
         return PrismaService.estabelecimento

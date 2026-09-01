@@ -1,12 +1,19 @@
 import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { EstabelecimentoDto } from "../dto/create-estabelecimento.dto.js";
 import { EstabelecimentoRepository } from "../repository/estabelecimento.respository.js";
+import { UserRepository } from "../repository/user.repository.js";
 
 @Injectable()
 export class EstabelecimentoService {
-    constructor(private estabelecimentoRepository: EstabelecimentoRepository) {}
+    constructor(private estabelecimentoRepository: EstabelecimentoRepository, private userRepository: UserRepository) {}
 
     async cadastrar(dto: EstabelecimentoDto) {
+        const userExist = await this.userRepository.findById(dto.dono);
+        if (!userExist) {
+            throw new NotFoundException("Não existe usuário com esse ID")
+        }
+
+
         return this.estabelecimentoRepository.cadastrarEstabelecimento(dto);
     }
 

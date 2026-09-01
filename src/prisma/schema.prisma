@@ -18,7 +18,7 @@ model User {
   email         String  @unique
   senha         String
 
-  
+  estabelecimento Estabelecimento[]
 
 
   @@map("user")
@@ -27,6 +27,7 @@ model User {
 model Estabelecimento {
   idEstabelecimento   Int       @id @default(autoincrement())
   dono                Int
+  User                User      @relation(fields: [dono], references: [idUser])
   nome                String
   cnpj                String    @unique
   idEndereco          Int
