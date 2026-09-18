@@ -17,23 +17,42 @@ model User {
   nome          String
   email         String  @unique
   senha         String
-
+  cpf           String  @unique
   estabelecimento Estabelecimento[]
+
+  colaborador     Colaborador[]
 
 
   @@map("user")
 }
 
 model Estabelecimento {
-  idEstabelecimento   Int       @id @default(autoincrement())
+  idEstabelecimento   Int           @id @default(autoincrement())
   dono                Int
-  User                User      @relation(fields: [dono], references: [idUser])
+  User                User          @relation(fields: [dono], references: [idUser])
   nome                String
-  cnpj                String    @unique
+  cnpj                String        @unique
   idEndereco          Int
-  Endereco            Enderecos @relation(fields: [idEndereco], references: [idEndereco])
+  Endereco            Enderecos     @relation(fields: [idEndereco], references: [idEndereco])
+
+  colaborador Colaborador[]
 
   @@map("estabelecimento")
+}
+
+model Colaborador {
+  idColaborador       Int       @id @default(autoincrement())
+  dataEmissao         DateTime      
+
+  idEstabelecimento   Int
+  Estabelecimento     Estabelecimento @relation(fields: [idEstabelecimento], references: [idEstabelecimento])
+
+  idUser              Int
+  User                User            @relation(fields: [idUser], references: [idUser])
+  
+  
+
+  @@map("colaborador")
 }
 
 model Enderecos {

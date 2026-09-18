@@ -17,6 +17,8 @@ export class EstabelecimentoService {
         return this.estabelecimentoRepository.cadastrarEstabelecimento(dto);
     }
 
+    
+
     async removerEstabelecimento(cnpj, dono) {
         const estabelecimento = await this.estabelecimentoRepository.findByCnpj(cnpj);
         if (!estabelecimento) {

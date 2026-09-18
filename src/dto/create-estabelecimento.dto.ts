@@ -15,6 +15,7 @@ export class EstabelecimentoDto {
         this.cnpj = cpnj
         this.endereco = endereco 
         this.dono = dono
+        
     }
 
 

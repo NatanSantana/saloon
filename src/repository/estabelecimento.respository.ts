@@ -2,8 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prismaService.js";
 import { EstabelecimentoDto } from "../dto/create-estabelecimento.dto.js";
 
+
 @Injectable()
 export class EstabelecimentoRepository {
+
+    findById(id: number) {
+        return PrismaService.estabelecimento.findUnique({
+            where: {
+                idEstabelecimento: id
+            }
+        })
+    }
 
     findByCnpj(cnpj: string) {
         return PrismaService.estabelecimento.findUnique({
@@ -33,7 +42,19 @@ export class EstabelecimentoRepository {
             Endereco: true
         }
     })
-}
+    }
+
+    findByIdDono(idUser: number) {
+        return PrismaService.estabelecimento.findMany({
+            where: {
+                dono: idUser
+            }
+        })
+    }
+
+    listarEstabelecimentos() {
+        return PrismaService.estabelecimento.findMany()
+    }
 
     deletarEstabelecimento(cnpj: string, dono: number) {
         return PrismaService.estabelecimento
