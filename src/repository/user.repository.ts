@@ -4,9 +4,12 @@ import { UserDto } from "../dto/create-user.dto.js";
 
 @Injectable()
 export class UserRepository {
+    constructor(private prismaService: PrismaService) {
+
+    }
     
     async findById(id: number){
-        return await PrismaService.user.findUnique({
+        return await this.prismaService.user.findUnique({
             where: {
                 idUser: id
             }
@@ -14,13 +17,13 @@ export class UserRepository {
     }
 
     async criarUser(user: UserDto) {
-        return await PrismaService.user.create({
+        return await this.prismaService.user.create({
             data: user
         })
     }
 
     async findByEmail(email: string) {
-        return await PrismaService.user.findUnique({
+        return await this.prismaService.user.findUnique({
             where: {
                 email: email
             }

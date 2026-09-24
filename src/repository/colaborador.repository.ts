@@ -4,9 +4,13 @@ import { PrismaService } from "../prisma/prismaService.js";
 
 @Injectable()
 export class ColaboradorRepository {
+    constructor(private prismaService: PrismaService) {
+
+    }
+
 
     findById(idColaborador: number) {
-        return PrismaService.colaborador.findUnique({
+        return this.prismaService.colaborador.findUnique({
             where: {
                 idColaborador: idColaborador
             }
@@ -14,14 +18,14 @@ export class ColaboradorRepository {
     }
 
     criarColaborador(dto: ColaboradorDto) {
-        return PrismaService.colaborador.create({
+        return this.prismaService.colaborador.create({
             data: dto
         })
 
     }
     // deleta o registro de colaborador
     deletarColaborador(idColaborador: number) {
-        return PrismaService.colaborador.delete({
+        return this.prismaService.colaborador.delete({
             where: {
                 idColaborador: idColaborador
             }
@@ -30,7 +34,7 @@ export class ColaboradorRepository {
 
     // tira o vínculo do colaborador a um estabelecimento
     demitirColaborador(idColaborador: number, idEstabelecimento: number) {
-        return PrismaService.colaborador.update({
+        return this.prismaService.colaborador.update({
             data: {
                 idEstabelecimento: 0
             }, 

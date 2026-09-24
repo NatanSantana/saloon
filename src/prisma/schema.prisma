@@ -37,7 +37,40 @@ model Estabelecimento {
 
   colaborador Colaborador[]
 
+  horariosDisponiveis horariosDisponiveis[]
+
   @@map("estabelecimento")
+}
+
+model Agendamentos {
+  idAgendamento   Int @id @default(autoincrement())
+
+  idHorario       Int
+  horariosDisponiveis horariosDisponiveis @relation(fields: [idHorario], references: [idHorario])
+
+  @@map("agendamentos")
+}
+
+model horariosDisponiveis {
+  idHorario Int @id @default(autoincrement())
+
+  dataHora          DateTime
+
+  ocupado           Boolean
+
+  minutosDuracao    Int
+
+  idEstabelecimento Int
+  Estabelecimento   Estabelecimento @relation(fields: [idEstabelecimento], references: [idEstabelecimento])
+  
+  idColaborador     Int
+  Colaborador       Colaborador @relation(fields: [idColaborador], references: [idColaborador])
+
+  agendamentos Agendamentos[]
+
+  @@map("horariosDisponiveis")
+
+
 }
 
 model Colaborador {
@@ -50,7 +83,7 @@ model Colaborador {
   idUser              Int
   User                User            @relation(fields: [idUser], references: [idUser])
   
-  
+  horariosDisponiveis horariosDisponiveis[]
 
   @@map("colaborador")
 }

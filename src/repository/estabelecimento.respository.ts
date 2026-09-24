@@ -5,9 +5,12 @@ import { EstabelecimentoDto } from "../dto/create-estabelecimento.dto.js";
 
 @Injectable()
 export class EstabelecimentoRepository {
+    constructor(private prismaService: PrismaService) {
+
+    }
 
     findById(id: number) {
-        return PrismaService.estabelecimento.findUnique({
+        return this.prismaService.estabelecimento.findUnique({
             where: {
                 idEstabelecimento: id
             }
@@ -15,7 +18,7 @@ export class EstabelecimentoRepository {
     }
 
     findByCnpj(cnpj: string) {
-        return PrismaService.estabelecimento.findUnique({
+        return this.prismaService.estabelecimento.findUnique({
             where: {
                 cnpj: cnpj
             }
@@ -24,7 +27,7 @@ export class EstabelecimentoRepository {
 
 
     cadastrarEstabelecimento(dto: EstabelecimentoDto) {
-    return PrismaService.estabelecimento.create({
+    return this.prismaService.estabelecimento.create({
         data: {
             User: { connect: { idUser: dto.dono } },
             nome: dto.nome,
@@ -45,7 +48,7 @@ export class EstabelecimentoRepository {
     }
 
     findByIdDono(idUser: number) {
-        return PrismaService.estabelecimento.findMany({
+        return this.prismaService.estabelecimento.findMany({
             where: {
                 dono: idUser
             }
@@ -53,11 +56,11 @@ export class EstabelecimentoRepository {
     }
 
     listarEstabelecimentos() {
-        return PrismaService.estabelecimento.findMany()
+        return this.prismaService.estabelecimento.findMany()
     }
 
     deletarEstabelecimento(cnpj: string, dono: number) {
-        return PrismaService.estabelecimento
+        return this.prismaService.estabelecimento
     }
 
 
