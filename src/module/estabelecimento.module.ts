@@ -3,11 +3,12 @@ import { EstabelecimentoController } from "../controller/estabelecimento.control
 import { EstabelecimentoRepository } from "../repository/estabelecimento.respository.js";
 import { EstabelecimentoService } from "../service/estabelecimento.service.js";
 import { UserRepository } from "../repository/user.repository.js";
+import { PrismaService } from "../prisma/prismaService.js";
 
 @Module({
   imports: [],
   controllers: [EstabelecimentoController],
-  providers: [EstabelecimentoRepository, EstabelecimentoService, UserRepository],
+  providers: [PrismaService, EstabelecimentoRepository, EstabelecimentoService, UserRepository],
   exports: [EstabelecimentoRepository, EstabelecimentoService]
 })
 export class EstabelecimentoModule {}

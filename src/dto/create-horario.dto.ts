@@ -1,5 +1,7 @@
+import { Type } from 'class-transformer'
 
-export class horarioDto {
+export class HorarioDto {
+    @Type(() => Date)
     dataHora: Date
     idEstabelecimento: number
     idColaborador: number

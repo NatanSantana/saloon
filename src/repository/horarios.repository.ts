@@ -1,11 +1,24 @@
 import { Injectable } from "@nestjs/common";
-import { horarioDto } from "../dto/create-horario.dto.js";
+import { HorarioDto } from "../dto/create-horario.dto.js";
 import { PrismaService } from "../prisma/prismaService.js";
+import { addMinutes } from 'date-fns'
+import { Prisma } from "../generated/prisma/client.js"
 
 @Injectable()
 export class HorariosRepository {
     constructor(private prismaService: PrismaService) {
 
+    }
+
+    desocuparHorario(idHorario: number) {
+        return this.prismaService.horariosDisponiveis.update({
+            data: {
+                ocupado: false
+            },
+            where: {
+                idHorario: idHorario
+            }
+        })
     }
 
     findById(idhorario: number) {
@@ -16,11 +29,11 @@ export class HorariosRepository {
         })
     }
 
-    lancarHorario(dto: horarioDto) {
-        return this.prismaService.horariosDisponiveis.create({
-            data: dto
-        })
-    }
+    lancarHorario(tx: Prisma.TransactionClient, dto: HorarioDto) {
+    return tx.horariosDisponiveis.create({
+        data: dto
+    })
+}
 
     cancelarHorario(idHorario: number) {
         return this.prismaService.horariosDisponiveis.delete({
@@ -30,22 +43,22 @@ export class HorariosRepository {
         })
     }
 
-    async horarioConflite(horarioInicio: Date, horarioTermino: Date, idEstabelecimento: number): Promise<boolean> {
-  const conflitos = await this.prismaService.horariosDisponiveis.findMany({
-    select: {
-        idHorario: true
-    },
+    async horarioConflite(tx: Prisma.TransactionClient, horarioInicio: Date, horarioTermino: Date, idEstabelecimento: number, idColaborador: number): Promise<boolean> {
+        const inicio = new Date(horarioInicio);
+  const termino = new Date(horarioTermino);
+  const candidatos = await tx.horariosDisponiveis.findMany({
+    select: { dataHora: true, minutosDuracao: true },
     where: {
-      idEstabelecimento: idEstabelecimento,
-      horarioInicio: { lt: horarioTermino },
-      horarioTermino: { gt: horarioInicio },
+      idEstabelecimento,
+      idColaborador,
+      dataHora: { lt: termino },
     },
-  });
+  })
 
-  return conflitos.length > 0;
+  return candidatos.some(h => {
+    const fimExistente = addMinutes(h.dataHora, h.minutosDuracao)
+    return fimExistente > inicio
+  })
 }
-
-
-
 
 }

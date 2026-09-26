@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Patch, Post, Query } from "@nestjs/commo
 import { ColaboradorDto } from "../dto/create-colaborador.dto.js";
 import { ColaboradorService } from "../service/colaborador.service.js";
 
-@Controller("colaborador")
+@Controller("/colaborador")
 export class ColaboradorController {
     constructor(private colaboradorService: ColaboradorService) {
 
