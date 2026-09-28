@@ -15,7 +15,7 @@ export class ColaboradorService {
         const [estabelecimento, user, colaboradorExist] = await Promise.all([
             this.estabelecimentoRepository.findById(dto.idEstabelecimento),
             this.userRepository.findById(dto.idUser),
-            this.colaboradorRepository.findByIdUser(dto.idUser)
+            this.colaboradorRepository.findByIdUserAndIdEstabelecimento(dto.idUser)
         ])
 
         if (!estabelecimento) {
