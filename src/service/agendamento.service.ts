@@ -24,7 +24,7 @@ export class AgendamentoService {
         if (horario.ocupado === true) {
             throw new ConflictException("Esse horário já está ocupado")
         }
-
+        await this.horarioRepository.ocuparHorario(dto.idHorario);
         return await this.agendamentoRepository.marcarAgendamento(dto);
     }
 

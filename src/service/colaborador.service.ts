@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { ColaboradorDto } from "../dto/create-colaborador.dto.js";
 import { ColaboradorRepository } from "../repository/colaborador.repository.js";
 import { EstabelecimentoRepository } from "../repository/estabelecimento.respository.js";
 import { UserRepository } from "../repository/user.repository.js";
+import { toZonedTime } from "date-fns-tz";
 
 
 @Injectable()
@@ -11,9 +12,10 @@ export class ColaboradorService {
         private userRepository: UserRepository, private colaboradorRepository: ColaboradorRepository) {}
 
     async criarColaborador(dto: ColaboradorDto) {
-        const [estabelecimento, user] = await Promise.all([
+        const [estabelecimento, user, colaboradorExist] = await Promise.all([
             this.estabelecimentoRepository.findById(dto.idEstabelecimento),
-            this.userRepository.findById(dto.idUser)
+            this.userRepository.findById(dto.idUser),
+            this.colaboradorRepository.findByIdUser(dto.idUser)
         ])
 
         if (!estabelecimento) {
@@ -23,11 +25,17 @@ export class ColaboradorService {
             throw new NotFoundException("Usuário não encontrado")
         }
 
-        dto.dataEmissao = new Date();
+        if (colaboradorExist) {
+            throw new ConflictException("Esse usuário já está cadastrado como colaborador")
+        }
 
-        await this.colaboradorRepository.criarColaborador(dto)
+        const agora = toZonedTime(new Date(), "America/Sao_Paulo");
 
-        return "Criado"
+        dto.dataEmissao = agora;
+
+        const colaborador = await this.colaboradorRepository.criarColaborador(dto)
+
+        return colaborador
     }
 
     // deleta o registro de colaborador

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { EstabelecimentoDto } from "../dto/create-estabelecimento.dto.js";
 import { EstabelecimentoRepository } from "../repository/estabelecimento.respository.js";
 import { UserRepository } from "../repository/user.repository.js";
@@ -8,10 +8,20 @@ export class EstabelecimentoService {
     constructor(private estabelecimentoRepository: EstabelecimentoRepository, private userRepository: UserRepository) {}
 
     async cadastrar(dto: EstabelecimentoDto) {
-        const userExist = await this.userRepository.findById(dto.dono);
+        const [userExist, estabelecimento ] = await Promise.all([
+            this.userRepository.findById(dto.dono),
+            this.estabelecimentoRepository.findByCnpj(dto.cnpj)
+        ])
+        
         if (!userExist) {
             throw new NotFoundException("Não existe usuário com esse ID")
         }
+
+        if (estabelecimento) {
+            throw new ConflictException("Já existe um estabelecimento com esse cnpj")
+        }
+
+
 
 
         return this.estabelecimentoRepository.cadastrarEstabelecimento(dto);

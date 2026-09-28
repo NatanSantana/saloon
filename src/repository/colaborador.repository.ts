@@ -8,6 +8,14 @@ export class ColaboradorRepository {
 
     }
 
+    findByIdUser(idUser: number) {
+        return this.prismaService.colaborador.findMany({
+            where: {
+                idUser: idUser,
+                idEstabelecimento: idUser
+            }
+        })
+    }
 
     findById(idColaborador: number) {
         return this.prismaService.colaborador.findUnique({

@@ -5,6 +5,7 @@ import { EstabelecimentoRepository } from "../repository/estabelecimento.resposi
 import { ColaboradorRepository } from "../repository/colaborador.repository.js";
 import { addMinutes } from 'date-fns'
 import { PrismaService } from "../prisma/prismaService.js";
+import { stringify } from "node:querystring";
 
 
 @Injectable()
@@ -20,7 +21,12 @@ export class HorarioService {
     async lancarHorario(dto: HorarioDto[]) {
     return await this.prismaService.$transaction(async (tx) => {
         for (let valor of dto) {
-            if (valor.dataHora < new Date()) throw new BadRequestException("O horário não pode estar no passado")
+            if (typeof valor.minutosDuracao === "string") {
+                throw new BadRequestException("Minutos duração deve ser number")
+            }
+
+
+            if (new Date(valor.dataHora) < new Date()) throw new BadRequestException("O horário não pode estar no passado")
             if (valor.minutosDuracao <= 0) throw new BadRequestException("Os minutos de duração do serviço devem ser maiores que 0")
 
             const [estabelecimento, colaborador] = await Promise.all([

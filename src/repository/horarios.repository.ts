@@ -10,6 +10,17 @@ export class HorariosRepository {
 
     }
 
+    ocuparHorario(idHorario: number) {
+        return this.prismaService.horariosDisponiveis.update({
+            data: {
+                ocupado: true
+            },
+            where: {
+                idHorario: idHorario
+            }
+        })
+    }
+
     desocuparHorario(idHorario: number) {
         return this.prismaService.horariosDisponiveis.update({
             data: {
